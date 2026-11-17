@@ -58,7 +58,7 @@ const cartoDark = L.tileLayer(
 // "Blank" basemap: an empty layer so the white map background shows
 const blank = L.layerGroup();
 
-cartoLight.addTo(map);
+osm.addTo(map);
 
 // ==========================
 // SCALE BAR
