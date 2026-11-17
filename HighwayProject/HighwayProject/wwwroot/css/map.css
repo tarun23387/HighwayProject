@@ -1,0 +1,59 @@
+﻿html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100vh;
+    background: #ffffff !important;
+}
+
+#sidebar {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 280px;
+    z-index: 9999;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,.25);
+}
+
+.sidebar-header {
+    background: #ff7b00;
+    color: white;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 12px 12px 0 0;
+}
+
+.sidebar-content {
+    padding: 15px;
+}
+
+.district-label {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #00ac9e;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+}
+
+    .district-label::before {
+        display: none;
+    }
+
+#map {
+   
+}
+
+.leaflet-container {
+    background: #ffffff !important;
+}

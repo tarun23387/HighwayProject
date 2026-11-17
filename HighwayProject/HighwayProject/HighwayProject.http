@@ -1,0 +1,6 @@
+@HighwayProject_HostAddress = http://localhost:5130
+
+GET {{HighwayProject_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

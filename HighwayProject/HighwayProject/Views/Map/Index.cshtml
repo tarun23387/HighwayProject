@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>UP Health Facility Dashboard</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- =========================
+         FONTS
+    ========================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" />
+
+    <!-- =========================
+         CSS (Bootstrap first, then our overrides)
+    ========================== -->
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+
+    <!-- Accident Mode CSS -->
+    <link rel="stylesheet" href="~/css/accident-mode.css" />
+
+    <!-- AI Chatbot CSS -->
+    <link rel="stylesheet" href="~/css/ai-chat.css" />
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav id="navbar" class="navbar fixed-top">
+
+        <div class="container-fluid flex-nowrap gap-2 px-3">
+
+            <!-- Sidebar opener (phones / tablets only) -->
+            <button class="btn btn-sm nav-menu-btn d-lg-none"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#sidebar"
+                    aria-controls="sidebar"
+                    aria-label="Open map controls">
+                ☰
+            </button>
+
+            <div class="nav-logo me-auto">
+                <span class="text-truncate">🚑 UP Health Facility Dashboard</span>
+                <span class="nav-sub d-none d-md-inline" id="selectedLayer"></span>
+            </div>
+
+            <span class="badge rounded-pill nav-badge d-none d-sm-inline-block">GIS Portal</span>
+
+        </div>
+
+    </nav>
+
+    <!-- =========================
+         SIDEBAR TOGGLE (desktop only)
+    ========================== -->
+
+    <button id="sidebarToggle"
+            class="d-none d-lg-flex"
+            type="button"
+            title="Toggle Sidebar"
+            aria-label="Toggle sidebar">
+    </button>
+
+    <!-- =========================
+         SIDEBAR
+         lg and up  : fixed panel, collapsible
+         below lg   : Bootstrap offcanvas
+    ========================== -->
+
+    <div id="sidebar"
+         class="offcanvas-lg offcanvas-start"
+         tabindex="-1"
+         aria-labelledby="sidebarHeaderTitle">
+
+        <div id="sidebarHeader" class="offcanvas-header">
+            <h2 id="sidebarHeaderTitle" class="offcanvas-title">🗺️ Map Controls</h2>
+            <button type="button"
+                    class="btn-close btn-close-white d-lg-none"
+                    data-bs-dismiss="offcanvas"
+                    data-bs-target="#sidebar"
+                    aria-label="Close"></button>
+        </div>
+
+        <div id="sidebarBody" class="offcanvas-body">
+
+            <!-- ========== EMERGENCY TOOLS ========== -->
+            <div class="section">
+                <h3>Emergency Tool</h3>
+
+                <button id="accidentModeBtn" type="button" class="btn" onclick="toggleAccidentMode()">
+                    ⚠️ Accident Mode
+                </button>
+
+                <button id="myLocationBtn" type="button" class="btn" onclick="findNearestFromMyLocation()">
+                    📍 My Location
+                </button>
+            </div>
+
+            <!-- Basemap -->
+
+            <div class="section">
+
+                <h3>Basemap</h3>
+
+                <select id="basemapSelect" class="form-select form-select-sm" aria-label="Basemap">
+                    <option value="blank">Blank</option>
+                    <option value="osm">OpenStreetMap</option>
+                    <option value="satellite">Satellite</option>
+                    <option value="terrain">Terrain</option>
+                    <option value="light" selected>Carto Light</option>
+                    <option value="dark">Carto Dark</option>
+                </select>
+
+            </div>
+
+            <!-- Layers -->
+
+            <div class="section">
+
+                <h3>Layers</h3>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkTrauma">
+                    <label class="form-check-label" for="chkTrauma">Trauma DGMH (35)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkTrauma29">
+                    <label class="form-check-label" for="chkTrauma29">Trauma DGME (29)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkDH">
+                    <label class="form-check-label" for="chkDH">DH (107)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkSH">
+                    <label class="form-check-label" for="chkSH">SH (108)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkCHC">
+                    <label class="form-check-label" for="chkCHC">CHC (89)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkPrivateHospital">
+                    <label class="form-check-label" for="chkPrivateHospital">Private Hospital (137)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkPmRahat">
+                    <label class="form-check-label" for="chkPmRahat">PM Rahat (204)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkBloodBank">
+                    <label class="form-check-label" for="chkBloodBank">Blood Bank</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkDistrict" checked>
+                    <label class="form-check-label" for="chkDistrict">District Boundary</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkNH">
+                    <label class="form-check-label" for="chkNH">NH</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkExpressway">
+                    <label class="form-check-label" for="chkExpressway">Expressway</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkTollPlaza">
+                    <label class="form-check-label" for="chkTollPlaza">Toll Plaza (13)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkChc2km">
+                    <label class="form-check-label" for="chkChc2km">CHC within 2 km (7)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chkChc5km">
+                    <label class="form-check-label" for="chkChc5km">CHC within 5 km (20)</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =========================
+         FULLSCREEN BUTTON
+    ========================== -->
+
+    <button id="fullscreenBtn" type="button" class="btn btn-light" title="Fullscreen" aria-label="Toggle fullscreen">
+        ⛶
+    </button>
+
+    <!-- =========================
+         MAP
+    ========================== -->
+
+    <div id="map"></div>
+
+    <!-- =========================
+         ACCIDENT RESULT PANEL
+    ========================== -->
+
+    <div id="accidentResultPanel">
+        <div class="panel-header">
+            ⚠️ Nearest Hospitals from Accident Location
+            <button id="closeAccidentPanel" type="button" title="Close" aria-label="Close">✕</button>
+        </div>
+        <div id="nearestList"></div>
+    </div>
+
+    <!-- =========================
+         AI CHATBOT
+    ========================== -->
+
+    <!-- Floating chat button -->
+    <button id="chatBtn" type="button" onclick="toggleChat()" title="AI Emergency Assistant" aria-label="AI Emergency Assistant">
+        🤖
+    </button>
+
+    <!-- Chat Panel -->
+    <div id="chatPanel">
+
+        <div class="chat-header">
+            <div class="chat-avatar">🚑</div>
+            <div class="chat-title">
+                <div class="title-main">UP Emergency AI Assistant</div>
+            </div>
+            <button id="chatCloseBtn" type="button" onclick="toggleChat()" aria-label="Close chat">✕</button>
+        </div>
+
+        <!-- Quick question chips -->
+        <div id="quickChips"></div>
+
+        <!-- Messages -->
+        <div id="chatMessages"></div>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+            <input id="chatInput"
+                   type="text"
+                   placeholder="Ask anything, e.g. 'nearest trauma center?'" />
+            <button id="chatSendBtn" type="button" onclick="sendChatMessage()" title="Send">
+                ➤
+            </button>
+        </div>
+
+    </div>
+
+    <!-- =========================
+         JAVASCRIPT
+         ORDER IMPORTANT
+    ========================== -->
+    <!-- 0. BOOTSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 1. LEAFLET FIRST -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- 2. LEAFLET PLUGINS -->
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/leaflet.browser.print/dist/leaflet.browser.print.min.js"></script>
+
+    <!-- 3. CUSTOM JS (original order kept) -->
+    <script src="~/js/map-init.js"></script>
+    <script src="~/js/district-layer.js"></script>
+    <script src="~/js/trauma-layer.js"></script>
+    <script src="~/js/chc-layer.js"></script>
+    <script src="~/js/chc-expressway-layer.js"></script>
+    <script src="~/js/toll-plaza-layer.js"></script>
+    <script src="~/js/dh-layer.js"></script>
+    <script src="~/js/sh-layer.js"></script>
+    <script src="~/js/layer-control.js"></script>
+    <script src="~/js/sidebar.js"></script>
+    <script src="~/js/PrivateHospitalLayer.js"></script>
+    <script src="~/js/BloodBank.js"></script>
+
+    <!-- 4. ACCIDENT MODE (after map + layers) -->
+    <script src="~/js/accident-mode.js"></script>
+
+    <!-- 5. AI CHATBOT (last, after accident-mode) -->
+    <script src="~/js/ai-chat.js"></script>
+
+</body>
+</html>

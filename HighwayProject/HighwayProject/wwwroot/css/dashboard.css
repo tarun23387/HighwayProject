@@ -1,0 +1,446 @@
+﻿/* ============================================================
+   UP Health Facility Dashboard — dashboard.css v3
+   Loaded AFTER Bootstrap 5.3: theme tokens + component overrides.
+   ============================================================ */
+
+/* ---------- Theme tokens ---------- */
+:root {
+    --up-orange: #FF6B00;
+    --up-orange-dark: #E05000;
+    --up-orange-light: #FF8C00;
+    --up-navbar-h: 52px;
+    --up-sidebar-w: 300px;
+
+    /* Bootstrap theme mapped to the brand colour */
+    --bs-primary: var(--up-orange);
+    --bs-primary-rgb: 255, 107, 0;
+    --bs-link-color: var(--up-orange-dark);
+    --bs-link-color-rgb: 224, 80, 0;
+    --bs-link-hover-color: #b84300;
+    --bs-link-hover-color-rgb: 184, 67, 0;
+    --bs-body-font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --bs-body-font-size: .875rem;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* the map owns the whole viewport */
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--up-orange);
+    --bs-btn-border-color: var(--up-orange);
+    --bs-btn-hover-bg: var(--up-orange-dark);
+    --bs-btn-hover-border-color: var(--up-orange-dark);
+    --bs-btn-active-bg: #b84300;
+    --bs-btn-active-border-color: #b84300;
+    --bs-btn-disabled-bg: var(--up-orange);
+    --bs-btn-disabled-border-color: var(--up-orange);
+}
+
+.form-check-input:checked {
+    background-color: var(--up-orange);
+    border-color: var(--up-orange);
+}
+
+.form-check-input:focus,
+.form-select:focus {
+    border-color: #ff9a4d;
+    box-shadow: 0 0 0 .2rem rgba(255, 107, 0, .18);
+}
+
+/* ---------- Navbar ---------- */
+#navbar {
+    height: var(--up-navbar-h);
+    padding: 0;
+    background: linear-gradient(90deg, var(--up-orange-dark) 0%, var(--up-orange) 60%, var(--up-orange-light) 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+    z-index: 1030;
+}
+
+    #navbar .container-fluid {
+        height: 100%;
+    }
+
+    #navbar .nav-logo {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: .01em;
+        color: #fff;
+    }
+
+        #navbar .nav-logo .nav-sub {
+            font-size: .8rem;
+            font-weight: 500;
+            opacity: .85;
+            white-space: nowrap;
+        }
+
+.nav-menu-btn {
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+    border: 1px solid rgba(255, 255, 255, .4);
+    background: rgba(255, 255, 255, .15);
+}
+
+    .nav-menu-btn:hover,
+    .nav-menu-btn:focus-visible {
+        color: #fff;
+        background: rgba(255, 255, 255, .28);
+    }
+
+.nav-badge {
+    background: rgba(255, 255, 255, .18);
+    border: 1px solid rgba(255, 255, 255, .3);
+    padding: .4em .85em;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+}
+
+/* ---------- Map (fills the space below the navbar) ---------- */
+#map {
+    position: fixed;
+    top: var(--up-navbar-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #ffffff;
+}
+
+/* Leaflet zoom control — sits just right of the sidebar */
+.leaflet-top.leaflet-left {
+    top: var(--up-navbar-h);
+    left: 0;
+    transition: left .35s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Bottom-right Leaflet controls (draw, print, coordinates) clear the chat button */
+.leaflet-bottom.leaflet-right {
+    margin-bottom: 76px;
+}
+
+/* ---------- Sidebar (Bootstrap offcanvas below lg) ---------- */
+#sidebar {
+    --bs-offcanvas-width: var(--up-sidebar-w);
+    --bs-offcanvas-zindex: 1045;
+    top: var(--up-navbar-h);
+    background: #fff;
+}
+
+#sidebarHeader {
+    flex-shrink: 0;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, var(--up-orange) 0%, var(--up-orange-dark) 100%);
+    color: #fff;
+}
+
+    #sidebarHeader .offcanvas-title {
+        margin: 0;
+        font-size: .9rem;
+        font-weight: 700;
+        letter-spacing: .01em;
+        white-space: nowrap;
+    }
+
+    #sidebarHeader .btn-close {
+        padding: .4rem;
+    }
+
+#sidebarBody {
+    padding: 12px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: #e0e0e0 transparent;
+}
+
+    #sidebarBody::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #sidebarBody::-webkit-scrollbar-thumb {
+        background: #e0e0e0;
+        border-radius: 4px;
+    }
+
+/* Desktop: sidebar is a fixed, collapsible panel */
+@media (min-width: 992px) {
+    #sidebar.offcanvas-lg {
+        position: fixed;
+        top: var(--up-navbar-h);
+        bottom: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        width: var(--up-sidebar-w) !important;
+        height: auto !important;
+        visibility: visible !important;
+        transform: none !important;
+        background: #fff !important;
+        border-right: 1px solid rgba(0, 0, 0, .06) !important;
+        box-shadow: 2px 0 16px rgba(0, 0, 0, .10);
+        overflow: hidden;
+        z-index: 1045;
+        transition: width .35s cubic-bezier(.4, 0, .2, 1) !important;
+    }
+
+        #sidebar.offcanvas-lg.collapsed {
+            width: 0 !important;
+            border-right: 0 !important;
+            box-shadow: none;
+        }
+
+        /* Bootstrap hides the header / strips the body at lg — put them back */
+        #sidebar.offcanvas-lg #sidebarHeader {
+            display: flex !important;
+        }
+
+        #sidebar.offcanvas-lg #sidebarBody {
+            flex: 1 1 auto !important;
+            display: block !important;
+            padding: 12px 14px !important;
+            overflow-y: auto !important;
+        }
+
+    .leaflet-top.leaflet-left {
+        left: var(--up-sidebar-w);
+    }
+
+    body.sidebar-collapsed .leaflet-top.leaflet-left {
+        left: 18px; /* clear of the toggle pill */
+    }
+}
+
+/* ---------- Sidebar toggle — vertical pill on the edge (desktop) ---------- */
+#sidebarToggle {
+    position: fixed;
+    top: 50%;
+    left: var(--up-sidebar-w);
+    transform: translateY(-50%);
+    z-index: 1046;
+    width: 18px;
+    height: 64px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background: var(--up-orange);
+    border: none;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, .15);
+    cursor: pointer;
+    transition: left .35s cubic-bezier(.4, 0, .2, 1), background .15s;
+}
+
+    #sidebarToggle:hover {
+        background: var(--up-orange-dark);
+    }
+
+    #sidebarToggle::after {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-left: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        transform: rotate(45deg) translateX(1px);
+        transition: transform .35s;
+    }
+
+body.sidebar-collapsed #sidebarToggle {
+    left: 0;
+}
+
+    body.sidebar-collapsed #sidebarToggle::after {
+        transform: rotate(-135deg) translateX(1px);
+    }
+
+/* ---------- Section ---------- */
+.section {
+    padding: 12px 0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+    .section:first-child {
+        padding-top: 0;
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+
+    .section h3 {
+        margin: 0 0 10px 0;
+        font-size: .66rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: #8a8a8a; /* readable on white (was #ABABAB) */
+    }
+
+/* ---------- Layer checkboxes (Bootstrap form-check) ---------- */
+.section .form-check {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    min-height: 0;
+    margin: 0 0 1px;
+    padding: 0 8px;
+    border-radius: 7px;
+    transition: background .15s;
+}
+
+    .section .form-check:hover {
+        background: #F5F5F5;
+    }
+
+    .section .form-check .form-check-input {
+        float: none;
+        flex-shrink: 0;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .section .form-check .form-check-label {
+        flex: 1;
+        padding: 6px 0;
+        font-weight: 500;
+        color: #444;
+        cursor: pointer;
+        user-select: none;
+    }
+
+/* ---------- Basemap select ---------- */
+#basemapSelect {
+    border: 1.5px solid #E8E8E8;
+    border-radius: 9px;
+    background-color: #FAFAFA;
+    cursor: pointer;
+}
+
+/* ---------- Fullscreen button ---------- */
+#fullscreenBtn {
+    position: fixed;
+    top: calc(var(--up-navbar-h) + 12px);
+    right: 14px;
+    z-index: 1020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1.5px solid rgba(0, 0, 0, .08);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    font-size: 1rem;
+    transition: transform .15s, box-shadow .15s, background .15s;
+}
+
+    #fullscreenBtn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .16);
+    }
+
+/* ---------- District labels (no white box) ---------- */
+.district-label {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #1a237e;
+    font-family: var(--bs-body-font-family);
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: -1px -1px 0 rgba(255,255,255,.85), 1px -1px 0 rgba(255,255,255,.85), -1px 1px 0 rgba(255,255,255,.85), 1px 1px 0 rgba(255,255,255,.85), 0 2px 4px rgba(255,255,255,.6);
+    letter-spacing: .02em;
+    pointer-events: none;
+}
+
+.leaflet-tooltip.district-label {
+    padding: 0 !important;
+}
+
+    .leaflet-tooltip.district-label::before {
+        display: none !important;
+    }
+
+/* ---------- Popup card ---------- */
+.popup-card {
+    min-width: 230px;
+    font-family: var(--bs-body-font-family);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.popup-header {
+    color: white;
+    padding: 9px 13px;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+
+.chc-header {
+    background: linear-gradient(90deg, #1B8C54, #0F5C37);
+}
+
+.trauma-header {
+    background: linear-gradient(90deg, #B57A3C, #6E4623);
+}
+
+.dh-header {
+    background: linear-gradient(90deg, #1B72E8, #0D4FB5);
+}
+
+.toll-header {
+    background: linear-gradient(90deg, #7B1FA2, #4A148C);
+}
+
+.sh-header {
+    background: linear-gradient(90deg, #F07A1A, #C35A08);
+}
+
+.popup-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .popup-table td {
+        border: 1px solid #EBEBEB;
+        padding: 6px 10px;
+        font-size: 12.5px;
+        color: #444;
+    }
+
+    .popup-table tr:nth-child(even) td {
+        background: #FAFAFA;
+    }
+
+    .popup-table td:first-child {
+        font-weight: 600;
+        color: #222;
+        width: 42%;
+    }
+
+.coordinate-box {
+    background: white;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .25);
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 575.98px) {
+    #navbar .nav-logo {
+        font-size: .95rem;
+    }
+
+    #fullscreenBtn {
+        width: 36px;
+        height: 36px;
+    }
+}

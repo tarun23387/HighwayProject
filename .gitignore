@@ -1,0 +1,21 @@
+# Build output / IDE
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Archives (28 MB backup etc.)
+*.rar
+*.zip
+
+# Local secrets: appsettings.json holds an API key and DB password.
+# Keep real values in `dotnet user-secrets` / environment variables.
+appsettings.json
+appsettings.*.json
+
+# Static build output
+_site/
+
+# Raw source spreadsheets / WhatsApp screenshots - kept local, not published
+Excels/
